@@ -44,7 +44,7 @@ describe('Message API endpoints', () => {
 
     afterEach((done) => {
         // Delete our test message from database
-        Message.deleteOne({ title: "Test Message" })
+        Message.deleteMany({ title: ["Test Message", 'Test Message #2'] })
           .then(() => {
             done()
           })
