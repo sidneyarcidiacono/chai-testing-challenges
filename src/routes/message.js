@@ -10,7 +10,7 @@ router.get('/', (req, res) => {
     Message.find()
       .then(messages => {
         // Return the Message objects as a JSON list
-        return res.json(messages)
+        return res.json({ messages })
       })
       .catch(err => {
         throw err.message
@@ -24,7 +24,7 @@ router.get('/:messageId', (req, res) => {
     Message.findOne({ _id: req.params.messageId })
       .then(message => {
         // Return the matching Message object as JSON
-        return res.json(message)
+        return res.json({ message })
       })
       .catch(err => {
         throw err.message
@@ -45,7 +45,7 @@ router.post('/', (req, res) => {
         return user.save()
     })
     .then(() => {
-        return res.json(message)
+        return res.json({ message })
     }).catch(err => {
         throw err.message
     })
@@ -57,7 +57,7 @@ router.put('/:messageId', (req, res) => {
     Message.findByIdAndUpdate(req.params.messageId, req.body)
       .then(updatedMessage => {
         // Return the updated Message object as JSON
-        return res.json(updatedMessage)
+        return res.json({ updatedMessage })
       })
       .catch(err => {
         throw err.message
@@ -79,7 +79,7 @@ router.delete('/:messageId', (req, res) => {
       })
       .then(result => {
         // Return a JSON object indicating that the Message has been deleted
-        return res.json({ msg: "The message has been successfully deleted." })
+        return res.json({ _id: req.params.messageId, msg: "The message has been successfully deleted." })
       })
       .catch(err => {
         throw err.message

@@ -54,9 +54,10 @@ describe('Message API endpoints', () => {
         // Check that we get our message and return a 200 response.
         chai.request(app)
           .get('/messages')
-          .end((error, response) => {
+          .end((error, res) => {
             if(error) done(error)
-            expect(response).to.have.status(200)
+            expect(res.body.messages).to.be.an("array")
+            expect(res).to.have.status(200)
             done()
           })
     })
@@ -64,9 +65,9 @@ describe('Message API endpoints', () => {
     it('should get one specific message', (done) => {
       chai.request(app)
         .get('/messages/' + testMessageId)
-        .end((error, response) => {
+        .end((error, res) => {
           if(error) done(error)
-          expect(response).to.have.status(200)
+          expect(res).to.have.status(200)
           done()
         })
     })
@@ -79,10 +80,16 @@ describe('Message API endpoints', () => {
           body: "This is another test",
           author: "60188c630a81f04caad72dcc"
         })
-        .end((error, response) => {
+        .end((error, res) => {
           if(error) done(error)
-          expect(response).to.have.status(200)
-          done()
+          expect(res.body.message).to.be.an('object')
+          expect(res.body.message).to.have.property('title', 'Test Message #2')
+          expect(res).to.have.status(200)
+
+          Message.findOne({title: 'Test Message #2'}).then(message => {
+              expect(message).to.be.an('object')
+              done()
+          })
         })
     })
 
@@ -94,9 +101,10 @@ describe('Message API endpoints', () => {
           body: "This is an updated test",
           author: "60188c630a81f04caad72dcc"
         })
-        .end((error, response) => {
+        .end((error, res) => {
           if(error) done(error)
-          expect(response).to.have.status(200)
+          expect(res.body.updatedMessage).to.be.an('object')
+          expect(res).to.have.status(200)
           done()
         })
     })
@@ -104,9 +112,11 @@ describe('Message API endpoints', () => {
     it('should delete a message', (done) => {
       chai.request(app)
         .delete('/messages/' + testMessageId)
-        .end((error, response) => {
+        .end((error, res) => {
           if(error) done(error)
-          expect(response).to.have.status(200)
+          expect(res).to.have.status(200)
+          expect(res.body.msg).to.equal('The message has been successfully deleted.')
+          expect(res.body._id).to.equal(testMessageId.toString())
           done()
         })
     })
